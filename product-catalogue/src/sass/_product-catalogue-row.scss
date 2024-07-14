@@ -1,0 +1,47 @@
+.product-catalogue-row {
+    display: flex;
+    flex: 1;
+    max-width: 100%;
+
+    &-cell {
+        text-align: center;
+        align-content: center;
+        flex: 1;
+        min-width: 10rem;
+        width: 100%;
+        padding: 0.5rem 1rem;
+        border: 1px solid $cell-border-color;
+        background-color: $cell-bg-color;
+        color: $text-color;
+        max-width: 100%;
+        border-bottom: none;
+    
+        &-concat {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        &:not(:last-of-type),
+        &:first-of-type {
+            border-right: none;
+        }
+
+        .details-button {
+            padding: 0.5rem 1rem;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+        }
+        
+        .details-button:hover {
+            background-color: #0056b3;
+        }
+        
+        .details-button:active {
+            outline: none;
+        }
+    }
+}

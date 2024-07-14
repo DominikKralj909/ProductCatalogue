@@ -1,0 +1,65 @@
+.product-catalogue-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
+    max-height: 50vh;
+    overflow-y: auto;
+    border-top: none;
+    background-color: $body-bg-color;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    .product-catalogue-filters {
+        display: flex;
+        gap: 2rem;
+        padding: 1rem;
+        background-color: $body-bg-color;
+        color: $text-color;
+        position: sticky;
+        top: 0;
+        border-left: 1px solid $cell-border-color;
+        border-right: 1px solid $cell-border-color;
+    }
+
+    .product-catalogue-filter-wrapper label {
+        display: flex;
+        font-weight: bold;
+        text-wrap: nowrap;
+    }
+
+    .product-catalogue-filter-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .product-catalogue-filter-wrapper select,
+    .product-catalogue-filter-wrapper input {
+        padding: 0.5rem;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: 100%;
+        transition: border-color 0.3s ease;
+    }
+
+    .product-catalogue-filter-wrapper select:focus,
+    .product-catalogue-filter-wrapper input:focus {
+        outline: none;
+        border-color: #007bff;
+    }
+
+    .product-catalogue-filter-wrapper:last-of-type {
+        margin-left: auto;
+    }
+
+    .no-products-message {
+        color: #ff0000; 
+        font-style: italic;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+}
