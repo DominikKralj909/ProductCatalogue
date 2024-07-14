@@ -17,7 +17,8 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({ columns, rows, cate
     const [priceSortDirection, setPriceSortDirection] = useState<'' | 'asc' | 'desc'>('');
     const [titleSortDirection, setTitleSortDirection] = useState<'' | 'asc' | 'desc'>('');
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const [itemsPerPage, setItemsPerPage] = useState<number>(20); // Default items per page
+    const [itemsPerPage, setItemsPerPage] = useState<number>(20);
+    const [titleFilter, setTitleFilter] = useState<string>('');
 
     const handleCategoryChange = useCallback((category: string) => {
         setSelectedCategory(category);
@@ -53,7 +54,11 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({ columns, rows, cate
         setCurrentPage(pageNumber);
     }, []);
 
-   
+    const handleTitleFilterChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+        setTitleFilter(event.target.value);
+        setCurrentPage(1);
+    }, []);
+
     const filteredProducts = useMemo(() => {
         return rows.filter(product => {
             const categoryMatches = !selectedCategory || selectedCategory === '' || product.category.toLowerCase() === selectedCategory.toLowerCase();
@@ -64,7 +69,9 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({ columns, rows, cate
                 priceMatches = product.price >= minPrice && (maxPrice ? product.price <= maxPrice : true);
             }
 
-            return categoryMatches && priceMatches;
+            const titleMatches = !titleFilter || product.title.toLowerCase().includes(titleFilter.toLowerCase());
+
+            return categoryMatches && priceMatches && titleMatches;
         }).sort((a, b) => {
             if (priceSortDirection !== '' && titleSortDirection === '') {
                 return priceSortDirection === 'asc' ? a.price - b.price : b.price - a.price;
@@ -74,9 +81,8 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({ columns, rows, cate
                 return 0;
             }
         });
-    }, [rows, selectedCategory, selectedPriceRange, priceSortDirection, titleSortDirection]);
+    }, [rows, selectedCategory, selectedPriceRange, priceSortDirection, titleSortDirection, titleFilter]);
 
-   
     const paginatedRows = useMemo(() => {
         if (filteredProducts.length <= itemsPerPage) {
             return filteredProducts;
@@ -109,6 +115,8 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({ columns, rows, cate
                     priceRangeFilter={priceRangeFilter}
                     onCategoryChange={handleCategoryChange}
                     onPriceRangeChange={handlePriceRangeChange}
+                    onTitleFilterChange={handleTitleFilterChange} 
+                    titleFilter={titleFilter}
                     priceSortDirection={priceSortDirection}
                     titleSortDirection={titleSortDirection}
                 />

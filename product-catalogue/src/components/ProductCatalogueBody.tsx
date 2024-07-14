@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 import { PriceRangeFilter, Product } from '../types/types';
 import ProductCatalogueRow from './ProductCatalogueRow';
 
@@ -10,6 +10,8 @@ interface ProductCatalogBodyProps {
     priceRangeFilter?: PriceRangeFilter[];
     onCategoryChange: (category: string) => void;
     onPriceRangeChange: (priceRange: string) => void;
+    onTitleFilterChange: (event: React.ChangeEvent<HTMLInputElement>) => void; // New prop
+    titleFilter: string; // New prop
     priceSortDirection: '' | 'asc' | 'desc';
     titleSortDirection: '' | 'asc' | 'desc';
 }
@@ -22,53 +24,10 @@ const ProductCatalogueBody: React.FC<ProductCatalogBodyProps> = ({
     priceRangeFilter,
     onCategoryChange,
     onPriceRangeChange,
-    priceSortDirection,
-    titleSortDirection,
+    onTitleFilterChange, 
+    titleFilter,
+
 }) => {
-    const [titleFilter, setTitleFilter] = useState<string>('');
-
-    const filteredProducts = useMemo(() => {
-        const filtered = products.filter(product => {
-            const categoryMatches = !selectedCategory || selectedCategory === '' || product.category.toLowerCase() === selectedCategory.toLowerCase();
-
-            let priceMatches = true;
-
-            if (selectedPriceRange && selectedPriceRange !== '') {
-                const [minPrice, maxPrice] = selectedPriceRange.split('-').map(value => parseFloat(value.trim()));
-
-                priceMatches = product.price >= minPrice && (maxPrice ? product.price <= maxPrice : true);
-            }
-
-            const titleIncludes = !titleFilter || titleFilter === '' || product.title.toLowerCase().includes(titleFilter.toLowerCase());
-
-            return categoryMatches && priceMatches && titleIncludes;
-        });
-
-        filtered.sort((a, b) => {
-            if (priceSortDirection !== '' && titleSortDirection === '') {
-                if (priceSortDirection === 'asc') {
-                    return a.price - b.price;
-                } else {
-                    return b.price - a.price;
-                }
-            } else if (titleSortDirection !== '' && priceSortDirection === '') {
-                if (titleSortDirection === 'asc') {
-                    return a.title.localeCompare(b.title);
-                } else {
-                    return b.title.localeCompare(a.title);
-                }
-            } else {
-                return 0;
-            }
-        });
-
-        return filtered;
-    }, [products, selectedCategory, selectedPriceRange, priceSortDirection, titleSortDirection, titleFilter]);
-
-    const handleTitleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setTitleFilter(event.target.value);
-    };
-
     return (
         <div className="product-catalogue-body">
             {(categoryFilter || priceRangeFilter) && (
@@ -115,18 +74,18 @@ const ProductCatalogueBody: React.FC<ProductCatalogBodyProps> = ({
                         <input
                             type="text"
                             id="title"
-                            value={titleFilter}
-                            onChange={handleTitleFilterChange}
+                            value={titleFilter} // Use the title filter state
+                            onChange={onTitleFilterChange} // Use the title filter change handler
                             placeholder="Enter title"
                         />
                     </div>
                 </div>
             )}
 
-            {filteredProducts.length === 0 ? (
+            {products.length === 0 ? (
                 <p className="no-products-message">No products match your filter criteria.</p>
             ) : (
-                filteredProducts.map((product: Product) => (
+                products.map((product: Product) => (
                     <ProductCatalogueRow key={product.id} product={product} />
                 ))
             )}
