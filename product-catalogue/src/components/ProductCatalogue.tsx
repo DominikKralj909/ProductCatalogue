@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Columns, PriceRangeFilter, Product } from '../types/types';
 import ProductCatalogueBody from './ProductCatalogueBody';
 import ProductCatalogueHeader from './ProductCatalogueHeader';
@@ -19,17 +19,17 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({ columns, rows, cate
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [itemsPerPage, setItemsPerPage] = useState<number>(20); // Default items per page
 
-    const handleCategoryChange = (category: string) => {
+    const handleCategoryChange = useCallback((category: string) => {
         setSelectedCategory(category);
-        setCurrentPage(1); // Reset to page 1 when category changes
-    };
+        setCurrentPage(1);
+    }, []);
 
-    const handlePriceRangeChange = (priceRange: string) => {
+    const handlePriceRangeChange = useCallback((priceRange: string) => {
         setSelectedPriceRange(priceRange);
-        setCurrentPage(1); // Reset to page 1 when price range changes
-    };
+        setCurrentPage(1); 
+    }, []);
 
-    const handleSortPrice = () => {
+    const handleSortPrice = useCallback( () => {
         if (priceSortDirection === 'asc') {
             setPriceSortDirection('desc');
         } else {
@@ -37,9 +37,9 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({ columns, rows, cate
         }
         setTitleSortDirection('');
         setCurrentPage(1);
-    };
+    }, [priceSortDirection]);
 
-    const handleSortTitle = () => {
+    const handleSortTitle = useCallback(() => {
         if (titleSortDirection === 'asc') {
             setTitleSortDirection('desc');
         } else {
@@ -47,15 +47,51 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({ columns, rows, cate
         }
         setPriceSortDirection('');
         setCurrentPage(1);
-    };
+    }, [titleSortDirection]);
 
-    const handlePageChange = (pageNumber: number) => {
+    const handlePageChange = useCallback((pageNumber: number) => {
         setCurrentPage(pageNumber);
-    };
+    }, []);
 
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const paginatedRows = rows.slice(startIndex, endIndex);
+   
+    const filteredProducts = useMemo(() => {
+        return rows.filter(product => {
+            const categoryMatches = !selectedCategory || selectedCategory === '' || product.category.toLowerCase() === selectedCategory.toLowerCase();
+            let priceMatches = true;
+
+            if (selectedPriceRange && selectedPriceRange !== '') {
+                const [minPrice, maxPrice] = selectedPriceRange.split('-').map(value => parseFloat(value.trim()));
+                priceMatches = product.price >= minPrice && (maxPrice ? product.price <= maxPrice : true);
+            }
+
+            return categoryMatches && priceMatches;
+        }).sort((a, b) => {
+            if (priceSortDirection !== '' && titleSortDirection === '') {
+                return priceSortDirection === 'asc' ? a.price - b.price : b.price - a.price;
+            } else if (titleSortDirection !== '' && priceSortDirection === '') {
+                return titleSortDirection === 'asc' ? a.title.localeCompare(b.title) : b.title.localeCompare(a.title);
+            } else {
+                return 0;
+            }
+        });
+    }, [rows, selectedCategory, selectedPriceRange, priceSortDirection, titleSortDirection]);
+
+   
+    const paginatedRows = useMemo(() => {
+        if (filteredProducts.length <= itemsPerPage) {
+            return filteredProducts;
+        } else {
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            return filteredProducts.slice(startIndex, endIndex);
+        }
+    }, [filteredProducts, currentPage, itemsPerPage]);
+
+    useEffect(() => {
+        if (filteredProducts.length <= itemsPerPage) {
+            setCurrentPage(1);
+        }
+    }, [filteredProducts, itemsPerPage]);
 
     return (
         <div className="product-catalogue">
@@ -77,7 +113,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({ columns, rows, cate
                     titleSortDirection={titleSortDirection}
                 />
                 <ProductCatalogueFooter
-                    totalItems={rows.length}
+                    totalItems={filteredProducts.length}
                     itemsPerPage={itemsPerPage}
                     currentPage={currentPage}
                     onPageChange={handlePageChange}
