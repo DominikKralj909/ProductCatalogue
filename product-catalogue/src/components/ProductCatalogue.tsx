@@ -21,10 +21,12 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({ columns, rows, cate
 
     const handleCategoryChange = (category: string) => {
         setSelectedCategory(category);
+        setCurrentPage(1); // Reset to page 1 when category changes
     };
 
     const handlePriceRangeChange = (priceRange: string) => {
         setSelectedPriceRange(priceRange);
+        setCurrentPage(1); // Reset to page 1 when price range changes
     };
 
     const handleSortPrice = () => {
@@ -34,6 +36,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({ columns, rows, cate
             setPriceSortDirection('asc');
         }
         setTitleSortDirection('');
+        setCurrentPage(1);
     };
 
     const handleSortTitle = () => {
@@ -43,14 +46,13 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({ columns, rows, cate
             setTitleSortDirection('asc');
         }
         setPriceSortDirection('');
+        setCurrentPage(1);
     };
 
-    // Function to handle page change
     const handlePageChange = (pageNumber: number) => {
         setCurrentPage(pageNumber);
     };
 
-    // Calculate paginated rows based on currentPage and itemsPerPage
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const paginatedRows = rows.slice(startIndex, endIndex);
