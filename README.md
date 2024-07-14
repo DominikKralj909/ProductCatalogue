@@ -22,13 +22,16 @@ To get a local copy up and running follow these steps:
 ### Installation and setup
 
 1. **Clone the repo:**
-   ```bash
+```
    git clone https://github.com/your-username/product-catalogue-app.git
+```
    
-2. **Install the packages and dependencies**
-   ```bash
-  npm install
+2. **Install the packages**
+```
+   npm install
+```
 
-  2. **Start the app**
-   ```bash
-  npm run dev --host
+3. **Start the app**
+```
+   npm run dev --host
+```
