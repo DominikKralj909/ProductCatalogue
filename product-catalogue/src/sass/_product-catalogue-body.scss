@@ -48,7 +48,7 @@
     .product-catalogue-filter-wrapper select:focus,
     .product-catalogue-filter-wrapper input:focus {
         outline: none;
-        border-color: #007bff;
+        border-color: $btn-color;
     }
 
     .product-catalogue-filter-wrapper:last-of-type {

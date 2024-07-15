@@ -9,9 +9,10 @@ interface ProductCatalogueProps {
     rows: Product[];
     categoryFilter?: string[] | null;
     priceRangeFilter?: PriceRangeFilter[];
+    isGuest: boolean;
 }
 
-const ProductCatalogue: React.FC<ProductCatalogueProps> = ({ columns, rows, categoryFilter, priceRangeFilter }) => {
+const ProductCatalogue: React.FC<ProductCatalogueProps> = ({ columns, rows, categoryFilter, priceRangeFilter, isGuest }) => {
     const [selectedCategory, setSelectedCategory] = useState<string>('');
     const [selectedPriceRange, setSelectedPriceRange] = useState<string>('');
     const [priceSortDirection, setPriceSortDirection] = useState<'' | 'asc' | 'desc'>('');
@@ -19,7 +20,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({ columns, rows, cate
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [itemsPerPage, setItemsPerPage] = useState<number>(20);
     const [titleFilter, setTitleFilter] = useState<string>('');
-
+    
     const handleCategoryChange = useCallback((category: string) => {
         setSelectedCategory(category);
         setCurrentPage(1);
@@ -126,6 +127,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({ columns, rows, cate
                     currentPage={currentPage}
                     onPageChange={handlePageChange}
                     onItemsPerPageChange={setItemsPerPage}
+                    isGuest={isGuest}
                 />
             </div>
         </div>

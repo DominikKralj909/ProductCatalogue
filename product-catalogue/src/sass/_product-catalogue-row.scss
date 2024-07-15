@@ -29,8 +29,8 @@
 
         .details-button {
             padding: 0.5rem 1rem;
-            background-color: #007bff;
-            color: #fff;
+            background-color: $btn-color;
+            color: $body-bg-color;
             border: none;
             border-radius: 0.5rem;
             cursor: pointer;

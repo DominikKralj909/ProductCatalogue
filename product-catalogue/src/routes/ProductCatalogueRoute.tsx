@@ -1,5 +1,5 @@
 import { useMemo, useEffect, useState, CSSProperties } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 
 import { ClipLoader } from 'react-spinners';
 
@@ -12,6 +12,9 @@ import ProductCatalogue from '../components/ProductCatalogue';
 
 function App() {
     const token = localStorage.getItem('token');
+
+    const location = useLocation();
+    const isGuest = location.state?.isGuest || false; 
 
 	const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
@@ -75,7 +78,8 @@ function App() {
 					columns={columns} 
 					rows={products}
 					categoryFilter={["Furniture", "Fragrances", 'Beauty']}
-                    priceRangeFilter={priceRanges} 
+                    priceRangeFilter={priceRanges}
+                    isGuest={isGuest} 
 				/>
 			)}
 		</div>

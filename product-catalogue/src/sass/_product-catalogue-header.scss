@@ -10,13 +10,7 @@
         align-items: center;
         background-color: $header-bg-color;
         color: $header-text-color;
-        border: 1px solid $cell-border-color;
         gap: 0.5rem;
-
-        &:not(:last-of-type),
-        &:first-of-type {
-            border-right: none;
-        }
 
         .sort-button {
             background-color: transparent;

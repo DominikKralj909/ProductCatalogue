@@ -26,6 +26,8 @@ const Login: React.FC = () => {
         }
     };
 
+    const handleGuestLogin = () => navigate('/catalogue', { state: { isGuest: true } });
+
     return (
         <div className="login-container">
             <h2>Login</h2>
@@ -51,7 +53,7 @@ const Login: React.FC = () => {
                 <button type="submit">Login</button>
                 {error && <p className="error-message">{error}</p>}
             </form>
-            <button onClick={() => navigate('/catalogue')}>Continue as Guest</button>
+            <button onClick={handleGuestLogin}>Continue as Guest</button>
         </div>
     );
 };
