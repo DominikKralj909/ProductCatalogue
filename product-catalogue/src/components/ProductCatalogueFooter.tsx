@@ -1,4 +1,7 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faShoppingBasket } from '@fortawesome/free-solid-svg-icons';
+import { Product } from '../types/types';
 
 interface ProductCatalogueFooterProps {
     totalItems: number;
@@ -7,6 +10,7 @@ interface ProductCatalogueFooterProps {
     onPageChange: (pageNumber: number) => void;
     onItemsPerPageChange: (itemsPerPage: number) => void;
     isGuest: boolean;
+    basket: Set<Product>;
 }
 
 const ProductCatalogueFooter: React.FC<ProductCatalogueFooterProps> = ({
@@ -15,7 +19,8 @@ const ProductCatalogueFooter: React.FC<ProductCatalogueFooterProps> = ({
     currentPage,
     onPageChange,
     onItemsPerPageChange,
-    isGuest
+    isGuest,
+    basket
 }) => {
     const totalPages = Math.ceil(totalItems / itemsPerPage);
 
@@ -63,9 +68,20 @@ const ProductCatalogueFooter: React.FC<ProductCatalogueFooterProps> = ({
                 </div>
             </div>
             <div className="product-catalogue-footer-user-info">
-                {
-                    isGuest ? 'Logged in as Guest' : 'Logged in as User'
-                }
+                { isGuest ? 'Logged in as Guest' : 'Logged in as User' }
+                <div className="basket-icon" title="Basket Details on Hover">
+                    <FontAwesomeIcon icon={faShoppingBasket} size="lg" />
+                    <div className="basket-details">
+                       {basket.size > 0 ? 
+                            Array.from(basket).map(product => (
+                                <div key={product.id}>
+                                    <p>Title: {product.title}</p>
+                                    <p>Price: ${product.price.toFixed(2)}</p>
+                                </div>
+                            )) : 'Your Basket is empty'
+                        }
+                    </div>
+                </div>
             </div>
         </div>
     );

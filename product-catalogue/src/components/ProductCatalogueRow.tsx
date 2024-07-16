@@ -1,21 +1,20 @@
 import { useState, FC } from 'react';
-
 import classNames from 'classnames';
-
 import { Product } from '../types/types';
-
 import ProductCatalogueModal from './ProductCatalogueModal';
 
 interface ProductCatalogueRowProps {
     product: Product;
+    onAddToBasket: (product: Product) => void;
+    onRemoveFromBasket: (product: Product) => void;
+    isProductInBasket: (product: Product) => boolean;
 }
 
-const ProductCatalogueRow: FC<ProductCatalogueRowProps> = ({ product }) => {
+const ProductCatalogueRow: FC<ProductCatalogueRowProps> = ({ product, onAddToBasket, onRemoveFromBasket, isProductInBasket }) => {
     const { images, description, price, title } = product;
     const [showModal, setShowModal] = useState(false);
 
     const concatDescription = description.length > 100;
-
 
     const rowCellClasses = classNames("product-catalogue-row-cell", {
         "product-catalogue-row-cell-concat": concatDescription,
@@ -23,6 +22,14 @@ const ProductCatalogueRow: FC<ProductCatalogueRowProps> = ({ product }) => {
 
     const handleModalToggle = () => {
         setShowModal(!showModal);
+    };
+
+    const handleCheckboxChange = () => {
+        if (isProductInBasket(product)) {
+            onRemoveFromBasket(product);
+        } else {
+            onAddToBasket(product);
+        }
     };
 
     return (
@@ -37,6 +44,13 @@ const ProductCatalogueRow: FC<ProductCatalogueRowProps> = ({ product }) => {
             </div>
             <div className={rowCellClasses}>
                 <button className="details-button" onClick={handleModalToggle}>Details</button>
+            </div>
+            <div className={rowCellClasses}>
+                <input
+                    type="checkbox"
+                    checked={isProductInBasket(product)}
+                    onChange={handleCheckboxChange}
+                />
             </div>
             <ProductCatalogueModal
                 product={product}

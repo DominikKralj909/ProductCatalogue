@@ -19,6 +19,7 @@ const Login: React.FC = () => {
             const { token, refreshToken } = response.data;
             localStorage.setItem('token', token);
             localStorage.setItem('refreshToken', refreshToken);
+            localStorage.setItem('isGuest', 'false');
 
             navigate('/catalogue');
         } catch (err) {
@@ -26,7 +27,10 @@ const Login: React.FC = () => {
         }
     };
 
-    const handleGuestLogin = () => navigate('/catalogue', { state: { isGuest: true } });
+    const handleGuestLogin = () => {
+        navigate('/catalogue');
+        localStorage.setItem('isGuest', 'true');
+    };
 
     return (
         <div className="login-container">

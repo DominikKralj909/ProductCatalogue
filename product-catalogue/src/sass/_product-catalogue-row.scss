@@ -43,5 +43,9 @@
         .details-button:active {
             outline: none;
         }
+
+        &:last-of-type {
+            width: 1rem;
+        }
     }
 }

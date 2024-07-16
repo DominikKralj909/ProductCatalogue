@@ -10,10 +10,13 @@ interface ProductCatalogBodyProps {
     priceRangeFilter?: PriceRangeFilter[];
     onCategoryChange: (category: string) => void;
     onPriceRangeChange: (priceRange: string) => void;
-    onTitleFilterChange: (event: React.ChangeEvent<HTMLInputElement>) => void; // New prop
-    titleFilter: string; // New prop
+    onTitleFilterChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    titleFilter: string;
     priceSortDirection: '' | 'asc' | 'desc';
     titleSortDirection: '' | 'asc' | 'desc';
+    onAddToBasket: (product: Product) => void;
+    onRemoveFromBasket: (product: Product) => void;
+    isProductInBasket: (product: Product) => boolean;
 }
 
 const ProductCatalogueBody: React.FC<ProductCatalogBodyProps> = ({
@@ -24,9 +27,11 @@ const ProductCatalogueBody: React.FC<ProductCatalogBodyProps> = ({
     priceRangeFilter,
     onCategoryChange,
     onPriceRangeChange,
-    onTitleFilterChange, 
+    onTitleFilterChange,
     titleFilter,
-
+    onAddToBasket,
+    onRemoveFromBasket,
+    isProductInBasket
 }) => {
     return (
         <div className="product-catalogue-body">
@@ -74,8 +79,8 @@ const ProductCatalogueBody: React.FC<ProductCatalogBodyProps> = ({
                         <input
                             type="text"
                             id="title"
-                            value={titleFilter} // Use the title filter state
-                            onChange={onTitleFilterChange} // Use the title filter change handler
+                            value={titleFilter}
+                            onChange={onTitleFilterChange}
                             placeholder="Enter title"
                         />
                     </div>
@@ -86,7 +91,13 @@ const ProductCatalogueBody: React.FC<ProductCatalogBodyProps> = ({
                 <p className="no-products-message">No products match your filter criteria.</p>
             ) : (
                 products.map((product: Product) => (
-                    <ProductCatalogueRow key={product.id} product={product} />
+                    <ProductCatalogueRow
+                        key={product.id}
+                        product={product}
+                        onAddToBasket={onAddToBasket}
+                        onRemoveFromBasket={onRemoveFromBasket}
+                        isProductInBasket={isProductInBasket}
+                    />
                 ))
             )}
         </div>

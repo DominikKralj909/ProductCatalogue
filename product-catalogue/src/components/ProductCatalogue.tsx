@@ -12,7 +12,7 @@ interface ProductCatalogueProps {
     isGuest: boolean;
 }
 
-const ProductCatalogue: React.FC<ProductCatalogueProps> = ({ columns, rows, categoryFilter, priceRangeFilter, isGuest }) => {
+const ProductCatalogue: React.FC<ProductCatalogueProps> = ({ columns, rows, categoryFilter, priceRangeFilter, isGuest: isGuestProp }) => {
     const [selectedCategory, setSelectedCategory] = useState<string>('');
     const [selectedPriceRange, setSelectedPriceRange] = useState<string>('');
     const [priceSortDirection, setPriceSortDirection] = useState<'' | 'asc' | 'desc'>('');
@@ -20,7 +20,21 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({ columns, rows, cate
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [itemsPerPage, setItemsPerPage] = useState<number>(20);
     const [titleFilter, setTitleFilter] = useState<string>('');
-    
+    const [isGuest, setIsGuest] = useState<boolean>(isGuestProp);
+    const [basket, setBasket] = useState<Set<Product>>(new Set());
+
+    useEffect(() => {
+        const guestStatus = localStorage.getItem('isGuest');
+        setIsGuest(guestStatus === 'true');
+    }, []);
+
+    useEffect(() => {
+        const savedBasket = localStorage.getItem('basket');
+        if (savedBasket) {
+            setBasket(new Set(JSON.parse(savedBasket)));
+        }
+    }, []);
+
     const handleCategoryChange = useCallback((category: string) => {
         setSelectedCategory(category);
         setCurrentPage(1);
@@ -28,25 +42,17 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({ columns, rows, cate
 
     const handlePriceRangeChange = useCallback((priceRange: string) => {
         setSelectedPriceRange(priceRange);
-        setCurrentPage(1); 
+        setCurrentPage(1);
     }, []);
 
-    const handleSortPrice = useCallback( () => {
-        if (priceSortDirection === 'asc') {
-            setPriceSortDirection('desc');
-        } else {
-            setPriceSortDirection('asc');
-        }
+    const handleSortPrice = useCallback(() => {
+        setPriceSortDirection(priceSortDirection === 'asc' ? 'desc' : 'asc');
         setTitleSortDirection('');
         setCurrentPage(1);
     }, [priceSortDirection]);
 
     const handleSortTitle = useCallback(() => {
-        if (titleSortDirection === 'asc') {
-            setTitleSortDirection('desc');
-        } else {
-            setTitleSortDirection('asc');
-        }
+        setTitleSortDirection(titleSortDirection === 'asc' ? 'desc' : 'asc');
         setPriceSortDirection('');
         setCurrentPage(1);
     }, [titleSortDirection]);
@@ -59,6 +65,28 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({ columns, rows, cate
         setTitleFilter(event.target.value);
         setCurrentPage(1);
     }, []);
+
+    const handleAddToBasket = useCallback((product: Product) => {
+        setBasket(prevBasket => {
+            const updatedBasket = new Set(prevBasket);
+            updatedBasket.add(product);
+            localStorage.setItem('basket', JSON.stringify(Array.from(updatedBasket)));
+            return updatedBasket;
+        });
+    }, []);
+
+    const handleRemoveFromBasket = useCallback((product: Product) => {
+        setBasket(prevBasket => {
+            const updatedBasket = new Set(prevBasket);
+            updatedBasket.delete(product);
+            localStorage.setItem('basket', JSON.stringify(Array.from(updatedBasket)));
+            return updatedBasket;
+        });
+    }, []);
+
+    const isProductInBasket = useCallback((product: Product) => {
+        return basket.has(product);
+    }, [basket]);
 
     const filteredProducts = useMemo(() => {
         return rows.filter(product => {
@@ -116,10 +144,13 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({ columns, rows, cate
                     priceRangeFilter={priceRangeFilter}
                     onCategoryChange={handleCategoryChange}
                     onPriceRangeChange={handlePriceRangeChange}
-                    onTitleFilterChange={handleTitleFilterChange} 
+                    onTitleFilterChange={handleTitleFilterChange}
                     titleFilter={titleFilter}
                     priceSortDirection={priceSortDirection}
                     titleSortDirection={titleSortDirection}
+                    onAddToBasket={handleAddToBasket}
+                    onRemoveFromBasket={handleRemoveFromBasket}
+                    isProductInBasket={isProductInBasket}
                 />
                 <ProductCatalogueFooter
                     totalItems={filteredProducts.length}
@@ -128,6 +159,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({ columns, rows, cate
                     onPageChange={handlePageChange}
                     onItemsPerPageChange={setItemsPerPage}
                     isGuest={isGuest}
+                    basket={basket}
                 />
             </div>
         </div>

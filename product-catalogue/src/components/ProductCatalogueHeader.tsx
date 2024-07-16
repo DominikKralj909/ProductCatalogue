@@ -48,6 +48,9 @@ const ProductCatalogueHeader: React.FC<ProductCatalogueHeaderProps> = ({ columns
                     </div>
                 );
             })}
+            <div className="product-catalogue-header-cell">
+                Add to basket
+            </div>
         </div>
     );
 };

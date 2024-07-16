@@ -54,3 +54,28 @@
     }
 }
 
+/* Add this CSS to your stylesheet */
+.basket-icon {
+    position: relative;
+    display: inline-block;
+    margin-left: 20px; /* Adjust margin as needed */
+    cursor: pointer;
+}
+
+.basket-icon:hover .basket-details {
+    display: block;
+}
+
+.basket-details {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    min-width: 150px;
+    z-index: 1;
+}
+
+
