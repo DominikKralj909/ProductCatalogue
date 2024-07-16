@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
+import { useCallback, useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import apiClient from '../api/apiClient';
 
-const Login: React.FC = () => {
+function Login() {
+	const navigate = useNavigate();
+	
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
-    const navigate = useNavigate();
+   
 
-    const handleLogin = async (event: React.FormEvent) => {
+    const handleLogin = useCallback(async (event: FormEvent) => {
         event.preventDefault();
+
         try {
             const response = await apiClient.post('/auth/login', {
                 username,
@@ -25,12 +29,15 @@ const Login: React.FC = () => {
         } catch (err) {
             setError('Invalid username or password');
         }
-    };
+    }, [navigate, password, username]);
 
-    const handleGuestLogin = () => {
+
+
+
+    const handleGuestLogin = useCallback(() => {
         navigate('/catalogue');
         localStorage.setItem('isGuest', 'true');
-    };
+    }, [navigate]);
 
     return (
         <div className="login-container">
@@ -60,6 +67,6 @@ const Login: React.FC = () => {
             <button onClick={handleGuestLogin}>Continue as Guest</button>
         </div>
     );
-};
+}
 
 export default Login;
