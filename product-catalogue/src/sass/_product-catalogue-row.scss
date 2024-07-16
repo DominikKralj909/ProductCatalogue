@@ -7,7 +7,6 @@
         text-align: center;
         align-content: center;
         flex: 1;
-        min-width: 10rem;
         width: 100%;
         padding: 0.5rem 1rem;
         border: 1px solid $cell-border-color;
@@ -42,10 +41,6 @@
         
         .details-button:active {
             outline: none;
-        }
-
-        &:last-of-type {
-            width: 1rem;
         }
     }
 }

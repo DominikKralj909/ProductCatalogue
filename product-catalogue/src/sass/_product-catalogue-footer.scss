@@ -1,9 +1,9 @@
 .product-catalogue-footer {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 1rem;
     padding: 1rem;
-    justify-content: space-between;
     background-color: $body-bg-color;
     border-left: 1px solid $cell-border-color;
     border-right: 1px solid $cell-border-color;
