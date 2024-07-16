@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { PriceRangeFilter, Product } from '../types/types';
 import ProductCatalogueRow from './ProductCatalogueRow';
 
@@ -19,7 +20,7 @@ interface ProductCatalogBodyProps {
     isProductInBasket: (product: Product) => boolean;
 }
 
-const ProductCatalogueBody: React.FC<ProductCatalogBodyProps> = ({
+function ProductCatalogueBody({
     products,
     selectedCategory,
     selectedPriceRange,
@@ -32,7 +33,7 @@ const ProductCatalogueBody: React.FC<ProductCatalogBodyProps> = ({
     onAddToBasket,
     onRemoveFromBasket,
     isProductInBasket
-}) => {
+}: ProductCatalogBodyProps) {
     return (
         <div className="product-catalogue-body">
             {(categoryFilter || priceRangeFilter) && (
@@ -102,6 +103,6 @@ const ProductCatalogueBody: React.FC<ProductCatalogBodyProps> = ({
             )}
         </div>
     );
-};
+}
 
 export default ProductCatalogueBody;

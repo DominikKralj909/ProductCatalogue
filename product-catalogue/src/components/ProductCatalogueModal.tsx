@@ -1,4 +1,5 @@
-import React from 'react';
+import { useMemo, useCallback } from 'react';
+
 import { Product } from '../types/types';
 
 interface ProductCatalogueModalProps {
@@ -7,8 +8,12 @@ interface ProductCatalogueModalProps {
     onClose: () => void;
 }
 
-const ProductCatalogueModal: React.FC<ProductCatalogueModalProps> = ({ product, showModal, onClose }) => {
-    const { title, description, reviews, tags } = product;
+function ProductCatalogueModal({ product, showModal, onClose }: ProductCatalogueModalProps) {
+    const { title, description, reviews, tags } = useMemo(() => product, [product]);
+
+    const handleCloseModal = useCallback(() => {
+        onClose();
+    }, [onClose]);
 
     if (!showModal) return null;
 
@@ -17,7 +22,9 @@ const ProductCatalogueModal: React.FC<ProductCatalogueModalProps> = ({ product, 
             <div className="product-catalogue-modal">
                 <div className="product-catalogue-modal-header">
                     <h2>{title}</h2>
-                    <button className="product-catalogue-modal-close-button" onClick={onClose}>&times;</button>
+                    <button className="product-catalogue-modal-close-button" onClick={handleCloseModal}>
+                        &times;
+                    </button>
                 </div>
                 <div className="product-catalogue-modal-description">
                     {description}
@@ -39,6 +46,6 @@ const ProductCatalogueModal: React.FC<ProductCatalogueModalProps> = ({ product, 
             </div>
         </div>
     );
-};
+}
 
 export default ProductCatalogueModal;

@@ -1,8 +1,6 @@
 import axios from 'axios';
 
-const apiClient = axios.create({
-    baseURL: 'https://dummyjson.com',
-});
+const apiClient = axios.create({ baseURL: 'https://dummyjson.com' });
 
 apiClient.interceptors.request.use(
     (config) => {

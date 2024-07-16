@@ -1,5 +1,7 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+
 import { Columns, PriceRangeFilter, Product } from '../types/types';
+
 import ProductCatalogueBody from './ProductCatalogueBody';
 import ProductCatalogueHeader from './ProductCatalogueHeader';
 import ProductCatalogueFooter from './ProductCatalogueFooter';
@@ -12,7 +14,7 @@ interface ProductCatalogueProps {
     isGuest: boolean;
 }
 
-const ProductCatalogue: React.FC<ProductCatalogueProps> = ({ columns, rows, categoryFilter, priceRangeFilter, isGuest: isGuestProp }) => {
+function ProductCatalogue({ columns, rows, categoryFilter, priceRangeFilter, isGuest: isGuestProp }: ProductCatalogueProps) {
     const [selectedCategory, setSelectedCategory] = useState<string>('');
     const [selectedPriceRange, setSelectedPriceRange] = useState<string>('');
     const [priceSortDirection, setPriceSortDirection] = useState<'' | 'asc' | 'desc'>('');
@@ -67,26 +69,28 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({ columns, rows, cate
     }, []);
 
     const handleAddToBasket = useCallback((product: Product) => {
-        setBasket(prevBasket => {
+        setBasket((prevBasket: Set<Product>) => {
             const updatedBasket = new Set(prevBasket);
+
             updatedBasket.add(product);
             localStorage.setItem('basket', JSON.stringify(Array.from(updatedBasket)));
+
             return updatedBasket;
         });
     }, []);
 
     const handleRemoveFromBasket = useCallback((product: Product) => {
-        setBasket(prevBasket => {
+        setBasket((prevBasket: Set<Product>) => {
             const updatedBasket = new Set(prevBasket);
+
             updatedBasket.delete(product);
             localStorage.setItem('basket', JSON.stringify(Array.from(updatedBasket)));
+
             return updatedBasket;
         });
     }, []);
 
-    const isProductInBasket = useCallback((product: Product) => {
-        return basket.has(product);
-    }, [basket]);
+    const isProductInBasket = useCallback((product: Product) => basket.has(product), [basket]);
 
     const filteredProducts = useMemo(() => {
         return rows.filter(product => {
@@ -164,6 +168,6 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({ columns, rows, cate
             </div>
         </div>
     );
-};
+}
 
 export default ProductCatalogue;

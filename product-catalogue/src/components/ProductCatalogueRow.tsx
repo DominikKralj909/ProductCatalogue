@@ -1,5 +1,6 @@
-import { useState, FC } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import classNames from 'classnames';
+
 import { Product } from '../types/types';
 import ProductCatalogueModal from './ProductCatalogueModal';
 
@@ -10,27 +11,28 @@ interface ProductCatalogueRowProps {
     isProductInBasket: (product: Product) => boolean;
 }
 
-const ProductCatalogueRow: FC<ProductCatalogueRowProps> = ({ product, onAddToBasket, onRemoveFromBasket, isProductInBasket }) => {
+function ProductCatalogueRow({ product, onAddToBasket, onRemoveFromBasket, isProductInBasket }: ProductCatalogueRowProps) {
     const { images, description, price, title } = product;
+
     const [showModal, setShowModal] = useState(false);
 
-    const concatDescription = description.length > 100;
+    const concatDescription = useMemo(() => description.length > 100, [description]);
 
-    const rowCellClasses = classNames("product-catalogue-row-cell", {
-        "product-catalogue-row-cell-concat": concatDescription,
-    });
+    const rowCellClasses = useMemo(() => classNames('product-catalogue-row-cell', {
+        'product-catalogue-row-cell-concat': concatDescription,
+    }), [concatDescription]);
 
-    const handleModalToggle = () => {
-        setShowModal(!showModal);
-    };
+    const handleModalToggle = useCallback(() => {
+        setShowModal(prevShowModal => !prevShowModal);
+    }, []);
 
-    const handleCheckboxChange = () => {
+    const handleCheckboxChange = useCallback(() => {
         if (isProductInBasket(product)) {
             onRemoveFromBasket(product);
         } else {
             onAddToBasket(product);
         }
-    };
+    }, [product, isProductInBasket, onAddToBasket, onRemoveFromBasket]);
 
     return (
         <div className="product-catalogue-row">
@@ -59,6 +61,6 @@ const ProductCatalogueRow: FC<ProductCatalogueRowProps> = ({ product, onAddToBas
             />
         </div>
     );
-};
+}
 
 export default ProductCatalogueRow;
