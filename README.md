@@ -9,7 +9,7 @@ This application is a product catalogue built with React, designed to display an
 - **Sorting:** Enables sorting products by price (ascending and descending) and title (alphabetical order).
 - **Pagination:** Implements pagination for navigating through the list of products.
 - **Modal Details:** Displays detailed information about each product in a modal window.
-- **Responsive Design:** Ensures the application is responsive across different devices and screen sizes.
+- **Adding product to basket:** Allows adding products to the basket and storing them to local storage.
 
 ## Getting Started
 
